@@ -7,10 +7,10 @@ import App from './App'
 import { store } from './store/store'
 import { theme } from './theme/theme'
 
-const rootElement = document.getElementById('root')
-if (!rootElement) throw new Error('Failed to find the root element')
+const root = document.getElementById('root')
+if (!root) throw new Error('Root element not found')
 
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>

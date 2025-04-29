@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import HelloPage from './pages/HelloPage'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -16,7 +16,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   )

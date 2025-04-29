@@ -8,6 +8,7 @@ import {
   Container,
   TextField,
   Typography,
+  Stack,
 } from '@mui/material'
 
 export default function LoginPage() {
@@ -42,7 +43,7 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
           <TextField
             margin="normal"
             required
@@ -63,22 +64,24 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleDemoLogin}
-            sx={{ mb: 2 }}
-          >
-            Login with Demo Account
-          </Button>
+          <Stack spacing={2} sx={{ mt: 3 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Sign In
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={handleDemoLogin}
+            >
+              Login with Demo Account
+            </Button>
+          </Stack>
         </Box>
       </Box>
     </Container>
