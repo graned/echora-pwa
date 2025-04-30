@@ -1,11 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AuthState {
   isAuthenticated: boolean
+  user: {
+    name: string
+    email: string
+  }
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
+  user: {
+    name: 'Demo User',
+    email: 'demo@echora.app'
+  }
 }
 
 export const authSlice = createSlice({
