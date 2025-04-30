@@ -1,15 +1,27 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ['@mui/icons-material'],
-    exclude: ['@mui/material']
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src')
+    }
   },
   server: {
-    watch: {
-      usePolling: true
+    port: 5173,
+    strictPort: true,
+    host: true,
+    open: true
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html')
+      }
     }
   }
 })
