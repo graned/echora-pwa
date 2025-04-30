@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HelloPage from "./pages/HelloPage";
-import HelloPage2 from "./pages/HelloPage2";
+import StoryEditorPage from "./pages/StoryEditorPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppLayout from "./components/AppLayout";
 
@@ -15,17 +15,7 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AppLayout>
-                <HelloPage />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/hello2"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <HelloPage2 />
+                <StoryEditorPage />
               </AppLayout>
             </ProtectedRoute>
           }

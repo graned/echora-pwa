@@ -52,15 +52,6 @@ export default function Layout({
       <MainContent showToolbar={showToolbar} toolbarContent={toolbarContent}>
         {children}
       </MainContent>
-      <SideMenu
-        direction="right"
-        header={menuHeader}
-        defaultOpen
-        width={menuWidth}
-        collapsedWidth={collapsedWidth}
-      >
-        {menuContent}
-      </SideMenu>
     </Box>
   );
 }
