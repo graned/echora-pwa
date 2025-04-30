@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
-import HelloPage from './pages/HelloPage'
-import HelloPage2 from './pages/HelloPage2'
-import ProtectedRoute from './components/ProtectedRoute'
-import Layout from './components/Layout'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import HelloPage from "./pages/HelloPage";
+import HelloPage2 from "./pages/HelloPage2";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AppLayout from "./components/AppLayout";
 
 export default function App() {
   return (
@@ -14,9 +14,9 @@ export default function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <Layout>
+              <AppLayout>
                 <HelloPage />
-              </Layout>
+              </AppLayout>
             </ProtectedRoute>
           }
         />
@@ -24,14 +24,14 @@ export default function App() {
           path="/hello2"
           element={
             <ProtectedRoute>
-              <Layout>
+              <AppLayout>
                 <HelloPage2 />
-              </Layout>
+              </AppLayout>
             </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
