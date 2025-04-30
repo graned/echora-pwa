@@ -10,6 +10,7 @@ type LayoutProps = {
   menuFooter?: ReactNode;
   toolbarContent?: ReactNode;
   showToolbar?: boolean;
+  showSideMenu?: boolean;
   menuDirection?: "left" | "right";
   menuOpen?: boolean;
   menuWidth?: number;
@@ -23,6 +24,7 @@ export default function Layout({
   menuFooter,
   toolbarContent,
   showToolbar = true,
+  showSideMenu = true,
   menuDirection = "left",
   menuOpen = true,
   menuWidth = 240,
@@ -39,16 +41,18 @@ export default function Layout({
         },
       }}
     >
-      <SideMenu
-        direction={menuDirection}
-        header={menuHeader}
-        footer={menuFooter}
-        defaultOpen={menuOpen}
-        width={menuWidth}
-        collapsedWidth={collapsedWidth}
-      >
-        {menuContent}
-      </SideMenu>
+      {showSideMenu && (
+        <SideMenu
+          direction={menuDirection}
+          header={menuHeader}
+          footer={menuFooter}
+          defaultOpen={menuOpen}
+          width={menuWidth}
+          collapsedWidth={collapsedWidth}
+        >
+          {menuContent}
+        </SideMenu>
+      )}
       <MainContent showToolbar={showToolbar} toolbarContent={toolbarContent}>
         {children}
       </MainContent>

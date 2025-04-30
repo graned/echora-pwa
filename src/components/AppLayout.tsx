@@ -1,40 +1,74 @@
 import { ReactNode, useState } from "react";
 import {
+  Box,
   IconButton,
   Avatar,
   Menu,
   MenuItem,
-  List,
-  ListItem,
   ListItemIcon,
-  ListItemText,
   Typography,
-  Button,
-  Badge,
-  Chip,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
   useMediaQuery,
   useTheme,
-  Box,
+  Badge,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
   Person,
   Settings,
   ExitToApp,
+  Home,
+  Book,
+  Edit,
+  Group,
   Star,
 } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { logout } from "../store/slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Layout from "./Layout";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const userPlan = useAppSelector((state) => state.auth.user?.plan) || "Free";
+
+  const [mobileNavValue, setMobileNavValue] = useState(
+    location.pathname.startsWith("/stories")
+      ? "stories"
+      : location.pathname.startsWith("/characters")
+      ? "characters"
+      : "home"
+  );
+
+  const handleMobileNavChange = (
+    event: React.SyntheticEvent,
+    newValue: string
+  ) => {
+    setMobileNavValue(newValue);
+    switch (newValue) {
+      case "home":
+        navigate("/");
+        break;
+      case "stories":
+        navigate("/stories");
+        break;
+      case "characters":
+        navigate("/characters");
+        break;
+    }
+  };
 
   const getPlanColor = (plan: string) => {
     switch (plan.toLowerCase()) {
@@ -163,24 +197,74 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <Layout
-      toolbarContent={toolbarContent}
-      menuContent={menuContent}
-      menuHeader={
-        <Typography variant={isMobile ? "subtitle1" : "h6"}>Menu</Typography>
-      }
-      menuFooter={menuFooter}
-      menuWidth={isMobile ? 180 : 240}
-      collapsedWidth={isMobile ? 48 : 56}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        pb: isMobile ? "56px" : 0, // Add padding for bottom nav
+      }}
     >
-      <Box
-        sx={{
-          p: isMobile ? 1.5 : 3,
-          pb: isMobile ? "80px" : "40px", // Add space for mobile bottom nav
-        }}
+      <Layout
+        toolbarContent={toolbarContent}
+        menuContent={menuContent}
+        menuHeader={
+          <Typography variant={isMobile ? "subtitle1" : "h6"}>Menu</Typography>
+        }
+        menuFooter={menuFooter}
+        menuWidth={isMobile ? 180 : 240}
+        collapsedWidth={isMobile ? 48 : 56}
+        showSideMenu={!isMobile}
       >
-        {children}
-      </Box>
-    </Layout>
+        <Box
+          sx={{
+            p: isMobile ? 1.5 : 3,
+            pb: isMobile ? "80px" : "40px", // Add space for mobile bottom nav
+          }}
+        >
+          {children}
+        </Box>
+      </Layout>
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <Paper
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1200,
+            borderTop: "1px solid",
+            borderColor: "divider",
+          }}
+          elevation={3}
+        >
+          <BottomNavigation
+            showLabels
+            value={mobileNavValue}
+            onChange={handleMobileNavChange}
+          >
+            <BottomNavigationAction label="Home" value="home" icon={<Home />} />
+            <BottomNavigationAction
+              label="Stories"
+              value="stories"
+              icon={<Book />}
+            />
+            <BottomNavigationAction
+              label="Characters"
+              value="characters"
+              icon={<Group />}
+            />
+            <BottomNavigationAction
+              label="Write"
+              value="write"
+              icon={<Edit />}
+              onClick={() => navigate("/stories/new")}
+            />
+          </BottomNavigation>
+        </Paper>
+      )}
+    </Box>
   );
 }
