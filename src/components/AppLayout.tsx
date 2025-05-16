@@ -84,7 +84,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const toolbarContent = (
-    <>
+    <div>
       <Badge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -153,7 +153,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <Typography variant="body2">Logout</Typography>
         </MenuItem>
       </Menu>
-    </>
+    </div>
   );
 
   const menuContent = (

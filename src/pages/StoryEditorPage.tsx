@@ -25,6 +25,9 @@ import {
 } from "@mui/material";
 import { Save, Add, Close, Search, PersonAdd } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
+import TextEditor from "../components/TextEdtor";
+import TextEditorToolbar from "../components/TextEditorToolBar";
+import EditorPreview from "../components/EditorPreview";
 
 export default function StoryEditorPage() {
   const theme = useTheme();
@@ -38,6 +41,7 @@ export default function StoryEditorPage() {
   const [tabValue, setTabValue] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const characters = useAppSelector((state) => state.characters.list);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const emotions = ["neutral", "happy", "angry", "sad", "surprised"];
   const filteredCharacters = characters.filter((char) =>
@@ -89,6 +93,7 @@ export default function StoryEditorPage() {
         height: "calc(100vh - 64px)",
         p: 3,
         overflow: "hidden",
+        paddingTop: "5%",
       }}
     >
       {/* Header Section */}
@@ -119,94 +124,19 @@ export default function StoryEditorPage() {
         </Stack>
       </Box>
 
-      {/* Character Insert Button */}
-      <Box sx={{ mb: 2 }}>
-        <Button
-          variant="outlined"
-          startIcon={<Add />}
-          onClick={() => setOpenModal(true)}
-        >
-          Add Character
-        </Button>
-      </Box>
-
       {/* Editor Area */}
-      <Paper
-        elevation={3}
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
-        {/* Character Tags Preview */}
-        {content.includes("[") && (
-          <Box
-            sx={{
-              p: 1,
-              borderBottom: "1px solid",
-              borderColor: "divider",
-              display: "flex",
-              gap: 1,
-              flexWrap: "wrap",
-            }}
-          >
-            {Array.from(new Set(content.match(/\[(.*?)\]/g) || [])).map(
-              (tag) => (
-                <Chip
-                  key={tag}
-                  label={tag.replace(/[\[\]]/g, "")}
-                  onDelete={() => {
-                    setContent(
-                      content.replaceAll(tag, tag.replace(/[\[\]]/g, ""))
-                    );
-                  }}
-                  deleteIcon={<Close />}
-                  variant="outlined"
-                />
-              )
-            )}
-          </Box>
-        )}
+      <TextEditorToolbar
+        onPreviewModeToggle={() => setIsPreviewMode(!isPreviewMode)}
+        isPreviewMode={isPreviewMode}
+      />
 
-        {/* Scrollable Text Editor */}
-        <Box
-          sx={{
-            flex: 1,
-            overflow: "auto",
-            position: "relative",
-          }}
-        >
-          <TextField
-            fullWidth
-            multiline
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            inputRef={textareaRef}
-            sx={{
-              height: "100%",
-              "& .MuiOutlinedInput-root": {
-                height: "100%",
-                alignItems: "flex-start",
-                p: 2,
-              },
-              "& textarea": {
-                minHeight: "100%",
-                resize: "none",
-                fontSize: "1.1rem",
-                lineHeight: 1.6,
-                boxSizing: "border-box",
-              },
-            }}
-            InputProps={{
-              style: {
-                height: "100%",
-              },
-            }}
-          />
-        </Box>
-      </Paper>
+      {isPreviewMode ? (
+        <EditorPreview />
+      ) : (
+        <>
+          <TextEditor />
+        </>
+      )}
 
       {/* Character Selection Modal */}
       <ModalComponent

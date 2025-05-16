@@ -1,8 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// store/charactersSlice.ts
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Character {
   id: string;
   name: string;
+  description?: string;
+  code: string;
 }
 
 interface CharactersState {
@@ -11,10 +14,30 @@ interface CharactersState {
 
 const initialState: CharactersState = {
   list: [
-    { id: "1", name: "Aric the Brave" },
-    { id: "2", name: "Liora the Wise" },
-    { id: "3", name: "Garrick the Strong" },
-    { id: "4", name: "Elara the Swift" },
+    {
+      id: "1",
+      name: "Aric the Brave",
+      code: "aric_the_brave",
+      description: "Warrior from the north",
+    },
+    {
+      id: "2",
+      name: "Liora the Wise",
+      code: "liora_the_wise",
+      description: "Scholar and mage",
+    },
+    {
+      id: "3",
+      name: "Garrick the Strong",
+      description: "Blacksmith and fighter",
+      code: "garrick_the_strong",
+    },
+    {
+      id: "4",
+      name: "Elara the Swift",
+      description: "Rogue and scout",
+      code: "elara_the_swift",
+    },
   ],
 };
 
@@ -29,7 +52,25 @@ export const charactersSlice = createSlice({
       state.list = state.list.filter((char) => char.id !== action.payload);
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(findCharacterByCode.fulfilled, (state, action) => {
+      const character = action.payload;
+      if (character) {
+        state.list.push(character);
+      }
+    });
+  },
 });
+
+export const findCharacterByCode = createAsyncThunk(
+  "characters/findCharacterByCode",
+  async (code: string) => {
+    const character = charactersSlice
+      .getInitialState()
+      .list.find((char) => char.code === code);
+    return character;
+  }
+);
 
 export const { addCharacter, removeCharacter } = charactersSlice.actions;
 export default charactersSlice.reducer;

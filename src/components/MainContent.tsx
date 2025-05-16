@@ -24,7 +24,7 @@ export default function MainContent({
       {showToolbar && (
         <Toolbar
           sx={{
-            position: "sticky",
+            position: "fixed",
             top: 0,
             zIndex: 1100,
             backdropFilter: "blur(20px)",
