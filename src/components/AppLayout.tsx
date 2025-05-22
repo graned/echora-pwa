@@ -84,7 +84,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const toolbarContent = (
-    <div>
+    <Box>
       <Badge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -153,7 +153,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <Typography variant="body2">Logout</Typography>
         </MenuItem>
       </Menu>
-    </div>
+    </Box>
   );
 
   const menuContent = (
@@ -220,6 +220,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           sx={{
             p: isMobile ? 1.5 : 3,
             pb: isMobile ? "80px" : "40px", // Add space for mobile bottom nav
+            // Use theme colors for the gradient:
+            backgroundImage: `linear-gradient(
+          135deg,
+          ${theme.palette.primary.dark} 0%,
+          ${theme.palette.secondary.light} 100%
+        )`,
+            color: theme.palette.common.white,
           }}
         >
           {children}

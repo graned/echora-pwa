@@ -1,16 +1,7 @@
 // store/charactersSlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface Character {
-  id: string;
-  name: string;
-  description?: string;
-  code: string;
-}
-
-interface CharactersState {
-  list: Character[];
-}
+import { CharactersState } from "../../types/states";
+import { Character } from "../../types/entities";
 
 const initialState: CharactersState = {
   list: [

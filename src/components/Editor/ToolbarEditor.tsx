@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import uuid from "react-uuid";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
-import { tagSelectedText } from "../store/slices/editorSlice";
+import { RootState } from "../../store/store";
 import {
   Box,
   Button,
@@ -18,6 +18,9 @@ import {
   Divider,
 } from "@mui/material";
 import { Search, Close, PersonAdd, GraphicEq } from "@mui/icons-material";
+import { ReactEditor } from "slate-react";
+import { CharacterElement } from "../../types/entities";
+import { Range, Transforms } from "slate";
 
 interface Character {
   id: string;
@@ -27,23 +30,19 @@ interface Character {
 }
 
 interface ToolbarProps {
-  isPreviewMode: boolean;
-  onPreviewModeToggle: (isPreview: boolean) => void;
+  editor: ReactEditor;
   onSynth?: () => void;
 }
 
-const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
+const ToolbarEditor: React.FC<ToolbarProps> = ({
+  editor,
+  onSynth,
+}: ToolbarProps) => {
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCharacters, setSelectedCharacters] = useState<Character[]>([]);
-
   const characters = useSelector((state: RootState) => state.characters.list);
-  const editor = useSelector((state: RootState) => state.editor);
-
-  const filteredCharacters = characters.filter((char) =>
-    char.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleSelectCharacter = (character: Character) => {
     if (!selectedCharacters.some((c) => c.id === character.id)) {
@@ -57,17 +56,22 @@ const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
     setSelectedCharacters(selectedCharacters.filter((c) => c.id !== id));
   };
 
-  const handleChipOnClick = (character: Character) => {
-    dispatch(tagSelectedText(character));
-  };
-
-  // Toggle preview mode button handler
-  const handleTogglePreview = () => {
-    props.onPreviewModeToggle(!props.isPreviewMode);
+  // Wrap selection in a Character element
+  const insertCharacter = (char: { id: string; name: string }) => {
+    const { selection } = editor;
+    if (!selection || Range.isCollapsed(selection)) return;
+    const element: CharacterElement = {
+      type: "character",
+      characterId: char.id,
+      name: char.name,
+      children: [],
+    };
+    Transforms.wrapNodes(editor, element, { split: true, at: selection });
+    Transforms.collapse(editor, { edge: "end" });
   };
 
   return (
-    <Box sx={{ mb: 2 }}>
+    <Box>
       {/* Toolbar Actions */}
       <Box
         sx={{
@@ -83,29 +87,18 @@ const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
           variant="outlined"
           startIcon={<PersonAdd />}
           onClick={() => setOpenModal(true)}
-          disabled={props.isPreviewMode}
           sx={{ textTransform: "none" }}
         >
           Add Character
         </Button>
-
         <Button
-          variant={props.isPreviewMode ? "contained" : "outlined"}
-          onClick={handleTogglePreview}
+          variant="outlined"
+          startIcon={<GraphicEq />}
+          onClick={onSynth}
           sx={{ textTransform: "none" }}
         >
-          {props.isPreviewMode ? "Edit" : "Preview"}
+          Synth
         </Button>
-        {props.isPreviewMode && (
-          <Button
-            variant="outlined"
-            startIcon={<GraphicEq />}
-            onClick={props.onSynth}
-            sx={{ textTransform: "none" }}
-          >
-            Synth
-          </Button>
-        )}
       </Box>
 
       {/* Selected Characters Display */}
@@ -129,7 +122,7 @@ const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
                   border: "1px solid #A7D0CD",
                   cursor: "pointer",
                 }}
-                onClick={() => handleChipOnClick(char)}
+                onClick={() => insertCharacter(char)}
               />
             ))}
           </Box>
@@ -196,9 +189,9 @@ const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
           </Box>
 
           <Box sx={{ flex: 1, overflow: "auto" }}>
-            {filteredCharacters.length > 0 ? (
+            {characters.length > 0 ? (
               <List dense>
-                {filteredCharacters.map((char) => (
+                {characters.map((char) => (
                   <ListItem
                     key={char.id}
                     button
@@ -267,4 +260,4 @@ const TextEditorToolbar: React.FC<ToolbarProps> = (props: ToolbarProps) => {
   );
 };
 
-export default TextEditorToolbar;
+export default ToolbarEditor;
