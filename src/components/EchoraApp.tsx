@@ -1,74 +1,43 @@
-import { ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import StoryEditorPage from "../pages/StoryEditorPage";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import AIAppLayout from "./Core/AIAppLayout";
 import {
-  Box,
-  IconButton,
   Avatar,
+  Badge,
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
-  ListItemIcon,
   Typography,
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
   useMediaQuery,
   useTheme,
-  Badge,
-  Chip,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  Person,
-  Settings,
-  ExitToApp,
-  Home,
-  Book,
-  Edit,
-  Group,
-  Star,
-} from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { ExitToApp, Person, Settings, Star } from "@mui/icons-material";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
-import { useNavigate, useLocation } from "react-router-dom";
-import Layout from "./Layout";
 
-export default function AppLayout({ children }: { children: ReactNode }) {
+export default function EchoraApp({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const userPlan = useAppSelector((state) => state.auth.user?.plan) || "Free";
 
-  const [mobileNavValue, setMobileNavValue] = useState(
-    location.pathname.startsWith("/stories")
-      ? "stories"
-      : location.pathname.startsWith("/characters")
-      ? "characters"
-      : "home"
-  );
-
-  const handleMobileNavChange = (
-    event: React.SyntheticEvent,
-    newValue: string
-  ) => {
-    setMobileNavValue(newValue);
-    switch (newValue) {
-      case "home":
-        navigate("/");
-        break;
-      case "stories":
-        navigate("/stories");
-        break;
-      case "characters":
-        navigate("/characters");
-        break;
-    }
-  };
+  const userPlan =
+    useAppSelector((state: RootState) => state.auth.user?.plan) || "Free";
 
   const getPlanColor = (plan: string) => {
     switch (plan.toLowerCase()) {
@@ -159,14 +128,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const menuContent = (
     <List dense={isMobile}>
       {["Dashboard", "Characters", "Campaigns", "Library"].map((text) => (
-        <ListItem button key={text} sx={{ py: isMobile ? 0.5 : 1 }}>
+        <ListItemButton key={text} sx={{ py: isMobile ? 0.5 : 1 }}>
           <ListItemIcon sx={{ minWidth: isMobile ? "36px" : "40px" }}>
             <Star fontSize={isMobile ? "small" : "medium"} />
           </ListItemIcon>
           <ListItemText
             primary={<Typography variant="body2">{text}</Typography>}
           />
-        </ListItem>
+        </ListItemButton>
       ))}
     </List>
   );
@@ -195,83 +164,30 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </Box>
     </Button>
   );
-
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        pb: isMobile ? "56px" : 0, // Add padding for bottom nav
+    <AIAppLayout
+      showLeftSideMenu
+      leftMenuComponents={{
+        footer: menuFooter,
+        header: (
+          <Typography variant={isMobile ? "subtitle1" : "h6"}>Menu</Typography>
+        ),
+        content: menuContent,
+        collapsedWidth: 0,
+        defaultOpen: false,
+      }}
+      toolbarContent={toolbarContent}
+      contentStyle={{
+        // Use theme colors for the gradient:
+        backgroundImage: `linear-gradient(
+                      135deg,
+                      ${theme.palette.primary.dark} 0%,
+                      ${theme.palette.secondary.light} 100%
+                    )`,
+        color: theme.palette.common.white,
       }}
     >
-      <Layout
-        toolbarContent={toolbarContent}
-        menuContent={menuContent}
-        menuHeader={
-          <Typography variant={isMobile ? "subtitle1" : "h6"}>Menu</Typography>
-        }
-        menuFooter={menuFooter}
-        menuWidth={isMobile ? 180 : 240}
-        collapsedWidth={isMobile ? 48 : 56}
-        showSideMenu={!isMobile}
-      >
-        <Box
-          sx={{
-            p: isMobile ? 1.5 : 3,
-            pb: isMobile ? "80px" : "40px", // Add space for mobile bottom nav
-            // Use theme colors for the gradient:
-            backgroundImage: `linear-gradient(
-          135deg,
-          ${theme.palette.primary.dark} 0%,
-          ${theme.palette.secondary.light} 100%
-        )`,
-            color: theme.palette.common.white,
-          }}
-        >
-          {children}
-        </Box>
-      </Layout>
-
-      {/* Mobile Bottom Navigation */}
-      {isMobile && (
-        <Paper
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1200,
-            borderTop: "1px solid",
-            borderColor: "divider",
-          }}
-          elevation={3}
-        >
-          <BottomNavigation
-            showLabels
-            value={mobileNavValue}
-            onChange={handleMobileNavChange}
-          >
-            <BottomNavigationAction label="Home" value="home" icon={<Home />} />
-            <BottomNavigationAction
-              label="Stories"
-              value="stories"
-              icon={<Book />}
-            />
-            <BottomNavigationAction
-              label="Characters"
-              value="characters"
-              icon={<Group />}
-            />
-            <BottomNavigationAction
-              label="Write"
-              value="write"
-              icon={<Edit />}
-              onClick={() => navigate("/stories/new")}
-            />
-          </BottomNavigation>
-        </Paper>
-      )}
-    </Box>
+      {children}
+    </AIAppLayout>
   );
 }

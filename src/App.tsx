@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import HelloPage from "./pages/HelloPage";
+import ProtectedRoute from "./components/Core/ProtectedRoute";
+import { useAppSelector } from "./store/hooks";
+import EchoraApp from "./components/EchoraApp";
 import StoryEditorPage from "./pages/StoryEditorPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AppLayout from "./components/AppLayout";
 
 export default function App() {
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -13,10 +15,13 @@ export default function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute>
-              <AppLayout>
+            <ProtectedRoute
+              isAuthenticated={isAuthenticated}
+              defaultPath="/login"
+            >
+              <EchoraApp>
                 <StoryEditorPage />
-              </AppLayout>
+              </EchoraApp>
             </ProtectedRoute>
           }
         />

@@ -18,24 +18,12 @@ import {
   ReactEditor,
   useSelected,
   useFocused,
-  useSlateStatic,
 } from "slate-react";
 import { withHistory } from "slate-history";
-import {
-  Box,
-  Button,
-  Modal,
-  TextField,
-  MenuItem,
-  Typography,
-  IconButton,
-  Paper,
-  Divider,
-  Stack,
-} from "@mui/material";
-import { Close, Save } from "@mui/icons-material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { CharacterElement } from "../../types/entities";
 import ToolbarEditor from "./ToolbarEditor";
+import TextTagModal from "./modals/TextTag";
 
 type CustomElement =
   | CharacterElement
@@ -48,6 +36,7 @@ declare module "slate" {
 }
 
 export default function SlateEditor() {
+  const theme = useTheme();
   const editor = useMemo(() => {
     const e = withHistory(withReact(createEditor())) as ReactEditor;
     // Make 'character' elements inline so they don't break lines
@@ -60,7 +49,7 @@ export default function SlateEditor() {
   const [value, setValue] = useState<Descendant[]>([
     { type: "paragraph", children: [{ text: "" }] },
   ]);
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState<number[] | null>(null);
@@ -172,7 +161,7 @@ export default function SlateEditor() {
     );
   };
 
-  // Apply mood and background
+  // // Apply mood and background
   const applyAttrs = () => {
     if (currentPath) {
       Transforms.setNodes(editor, { mood, bgColor } as any, {
@@ -204,6 +193,7 @@ export default function SlateEditor() {
       {/* Toolbar */}
       <ToolbarEditor editor={editor} />
 
+      {/* Editor */}
       <Box
         ref={containerRef}
         sx={{
@@ -231,7 +221,6 @@ export default function SlateEditor() {
           scrollbarColor: "rgba(0,0,0,0.2) transparent",
         }}
       >
-        {/* Editor */}
         <Slate
           editor={editor}
           initialValue={value}
@@ -244,7 +233,7 @@ export default function SlateEditor() {
               // minHeight: 200,
               cursor: "text",
               outline: "none",
-              // caretColor: "#333",
+              caretColor: theme.palette.primary.main,
             }}
             // Increase padding to fit badges
             renderLeaf={(props) => (
@@ -255,61 +244,17 @@ export default function SlateEditor() {
       </Box>
 
       {/* Modal */}
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Paper sx={{ p: 2, width: 300, m: "20% auto" }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="h6">Edit Dialog</Typography>
-            <IconButton onClick={() => setModalOpen(false)}>
-              <Close />
-            </IconButton>
-          </Box>
-
-          <TextField
-            fullWidth
-            select
-            label="Mood"
-            value={mood}
-            onChange={(e) => setMood(e.target.value)}
-            sx={{ mt: 2 }}
-          >
-            {["happy", "sad", "angry", "neutral"].map((m) => (
-              <MenuItem key={m} value={m}>
-                {m}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" gutterBottom>
-              Background Color
-            </Typography>
-            <input
-              type="color"
-              value={bgColor}
-              onChange={(e) => setBgColor(e.target.value)}
-              style={{ width: "100%", height: 36, border: "none" }}
-            />
-          </Box>
-
-          <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-            <Button variant="contained" onClick={applyAttrs} sx={{ flex: 1 }}>
-              Apply
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={unassign}
-              sx={{ flex: 1 }}
-            >
-              Unassign
-            </Button>
-          </Box>
-        </Paper>
-      </Modal>
+      <TextTagModal
+        open={modalOpen}
+        moods={["neutral", "happy", "sad"]}
+        bgColor={bgColor}
+        mood={mood}
+        onClose={() => setModalOpen(false)}
+        unassign={unassign}
+        setBgColor={setBgColor}
+        setMood={setMood}
+        onApply={applyAttrs}
+      />
     </Box>
   );
 }

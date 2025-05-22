@@ -7,6 +7,7 @@ import {
   styled,
   css,
   Tooltip,
+  useTheme,
 } from "@mui/material";
 import {
   ChevronLeft,
@@ -15,6 +16,8 @@ import {
 } from "@mui/icons-material";
 
 type SideMenuProps = {
+  open?: boolean;
+  onToggle: (b: boolean) => void;
   direction?: "left" | "right";
   width?: number;
   collapsedWidth?: number;
@@ -37,15 +40,16 @@ const SmoothDrawer = styled(Drawer)(
 );
 
 export default function SideMenu({
+  open = true,
   direction = "left",
   width = 240,
   collapsedWidth = 56,
   children,
   header,
   footer,
-  defaultOpen = true,
+  onToggle,
 }: SideMenuProps) {
-  const [open, setOpen] = useState<boolean>(defaultOpen);
+  const theme = useTheme();
   const ChevronIcon = open === true ? ChevronLeft : ChevronRight;
 
   return (
@@ -53,17 +57,16 @@ export default function SideMenu({
       {/* Collapsed Menu Toggle (shown when menu is hidden) */}
       {!open && (
         <IconButton
-          onClick={() => setOpen(true)}
+          onClick={() => onToggle(true)}
           sx={{
             position: "fixed",
             left: direction === "left" ? 8 : "auto",
             right: direction === "right" ? 8 : "auto",
             top: 8,
             zIndex: 1200,
-            backgroundColor: "background.paper",
-            boxShadow: 3,
             "&:hover": {
-              backgroundColor: "background.default",
+              backgroundColor: theme.palette.secondary.light,
+              color: "black",
             },
           }}
         >
@@ -107,7 +110,7 @@ export default function SideMenu({
                 <>
                   <Box sx={{ flexGrow: 1 }}>{header}</Box>
                   <Tooltip title="Collapse menu">
-                    <IconButton onClick={() => setOpen(false)} size="small">
+                    <IconButton onClick={() => onToggle(false)} size="small">
                       <ChevronIcon />
                     </IconButton>
                   </Tooltip>
@@ -115,7 +118,7 @@ export default function SideMenu({
               ) : (
                 <Tooltip title="Expand menu">
                   <IconButton
-                    onClick={() => setOpen(true)}
+                    onClick={() => onToggle(true)}
                     size="small"
                     sx={{ mx: "auto" }}
                   >
