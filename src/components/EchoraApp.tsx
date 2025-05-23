@@ -20,7 +20,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ExitToApp, Person, Settings, Star } from "@mui/icons-material";
+import {
+  ExitToApp,
+  Person,
+  Settings,
+  Star,
+  Menu as MenuIcon,
+  MenuOpen,
+  AddToPhotos,
+} from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -35,6 +43,8 @@ export default function EchoraApp({
   const dispatch = useDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [leftMenuOpen, setLeftMenuOpen] = useState<boolean>(false);
+  // const [rightMenuOpen, setRightMenuOpen] = useState<boolean>(false);
 
   const userPlan =
     useAppSelector((state: RootState) => state.auth.user?.plan) || "Free";
@@ -73,6 +83,9 @@ export default function EchoraApp({
           />
         }
       >
+        <IconButton onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
+          <MenuIcon />
+        </IconButton>
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={isMobile ? { padding: "6px" } : {}}
@@ -164,17 +177,74 @@ export default function EchoraApp({
       </Box>
     </Button>
   );
+
+  const onNewProject = () => {};
+
+  const menuHeader = (
+    <Box>
+      {/* Left: Logo/Title & New button when expanded */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {leftMenuOpen && (
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontFamily: "'Courier Prime', monospace",
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+          >
+            Echora
+          </Typography>
+        )}
+        {/* Right: Collapse/Expand control using menu icons */}
+        <IconButton
+          onClick={() => setLeftMenuOpen(!leftMenuOpen)}
+          size="small"
+          // sx={{ color: fg }}
+          aria-label={leftMenuOpen ? "Expand menu" : "Collapse menu"}
+        >
+          {!leftMenuOpen ? (
+            <MenuIcon fontSize="small" />
+          ) : (
+            <MenuOpen fontSize="small" />
+          )}
+        </IconButton>
+        {leftMenuOpen && (
+          <IconButton
+            onClick={onNewProject}
+            size="small"
+            // sx={{ color: fg }}
+            aria-label="New"
+          >
+            <AddToPhotos fontSize="small" />
+          </IconButton>
+        )}
+      </Box>
+    </Box>
+  );
+
   return (
     <AIAppLayout
       showLeftSideMenu
       leftMenuComponents={{
-        footer: menuFooter,
-        header: (
-          <Typography variant={isMobile ? "subtitle1" : "h6"}>Menu</Typography>
-        ),
+        footer: {
+          content: menuFooter,
+        },
+        header: {
+          content: menuHeader,
+        },
         content: menuContent,
-        collapsedWidth: 0,
-        defaultOpen: false,
+        collapsedWidth: 240,
+        width: 240,
+        defaultOpen: true,
+        onToggle: setLeftMenuOpen,
+        openState: leftMenuOpen,
+        style: {
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: theme.shadows[4],
+        },
       }}
       toolbarContent={toolbarContent}
       contentStyle={{
@@ -185,6 +255,13 @@ export default function EchoraApp({
                       ${theme.palette.secondary.light} 100%
                     )`,
         color: theme.palette.common.white,
+        marginLeft: leftMenuOpen ? "240px" : "0px",
+        transition: "all 0.3s ease-in-out",
+        zIndex: 1000,
+      }}
+      drawerStyle={{
+        zIndex: leftMenuOpen ? 1200 : 0,
+        transition: "all 0.3s ease-in-out",
       }}
     >
       {children}

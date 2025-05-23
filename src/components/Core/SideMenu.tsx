@@ -15,6 +15,10 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
+interface MenuComponentProps {
+  content: JSX.Element;
+  style?: React.CSSProperties;
+}
 type SideMenuProps = {
   open?: boolean;
   onToggle: (b: boolean) => void;
@@ -22,8 +26,10 @@ type SideMenuProps = {
   width?: number;
   collapsedWidth?: number;
   children: ReactNode;
-  header?: ReactNode;
-  footer?: ReactNode;
+  header?: MenuComponentProps;
+  footer?: MenuComponentProps;
+  contentStyle?: React.CSSProperties;
+  drawerStyle?: React.CSSProperties;
   defaultOpen?: boolean;
 };
 
@@ -48,12 +54,13 @@ export default function SideMenu({
   header,
   footer,
   onToggle,
+  contentStyle,
+  drawerStyle,
 }: SideMenuProps) {
   const theme = useTheme();
-  const ChevronIcon = open === true ? ChevronLeft : ChevronRight;
 
   return (
-    <>
+    <Box>
       {/* Collapsed Menu Toggle (shown when menu is hidden) */}
       {!open && (
         <IconButton
@@ -86,11 +93,12 @@ export default function SideMenu({
             width: open ? width : collapsedWidth,
             boxSizing: "border-box",
           },
+          ...drawerStyle,
         }}
       >
         {/* Header Section (optional) */}
         {header && (
-          <>
+          <Box>
             <Box
               sx={{
                 position: "sticky",
@@ -104,36 +112,14 @@ export default function SideMenu({
                 justifyContent: "space-between",
                 alignItems: "center",
                 minHeight: "48px",
+                ...header.style,
               }}
             >
-              {open ? (
-                <>
-                  <Box sx={{ flexGrow: 1 }}>{header}</Box>
-                  <Tooltip title="Collapse menu">
-                    <IconButton onClick={() => onToggle(false)} size="small">
-                      <ChevronIcon />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              ) : (
-                <Tooltip title="Expand menu">
-                  <IconButton
-                    onClick={() => onToggle(true)}
-                    size="small"
-                    sx={{ mx: "auto" }}
-                  >
-                    <ChevronIcon
-                      sx={{
-                        transform:
-                          direction === "right" ? "rotate(180deg)" : "none",
-                      }}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )}
+              {header.content}
             </Box>
+
             <Divider />
-          </>
+          </Box>
         )}
 
         {/* Scrollable Content */}
@@ -152,6 +138,7 @@ export default function SideMenu({
               backgroundColor: "grey.700",
               borderRadius: 2,
             },
+            ...contentStyle,
           }}
         >
           {open ? children : null}
@@ -171,13 +158,14 @@ export default function SideMenu({
                 borderColor: "divider",
                 p: open ? 2 : 1,
                 textAlign: open ? "left" : "center",
+                ...footer.style,
               }}
             >
-              {open && footer}
+              {footer.content}
             </Box>
           </>
         )}
       </SmoothDrawer>
-    </>
+    </Box>
   );
 }

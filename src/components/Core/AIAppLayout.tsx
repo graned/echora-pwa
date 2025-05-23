@@ -3,19 +3,20 @@ import { Box, useMediaQuery, useTheme, Toolbar } from "@mui/material";
 
 import SideMenu from "./SideMenu";
 
-interface MobileMenuContent {
-  label: string;
-  value: string;
-  icon: ReactNode;
-  navPath: string;
-}
 interface MenuComponentProps {
-  header?: ReactNode;
-  footer?: ReactNode;
+  header?: {
+    content: JSX.Element;
+  };
+  footer?: {
+    content: JSX.Element;
+  };
   content: JSX.Element;
   defaultOpen?: boolean;
   width?: number;
   collapsedWidth?: number;
+  openState: boolean;
+  onToggle: (shouldOpen: boolean) => void;
+  style?: React.CSSProperties;
 }
 
 export interface AIAppLayoutProps {
@@ -25,6 +26,7 @@ export interface AIAppLayoutProps {
   rightMenuComponents?: MenuComponentProps;
   toolbarContent?: JSX.Element;
   contentStyle?: React.CSSProperties;
+  drawerStyle?: React.CSSProperties;
   children: ReactNode;
 }
 
@@ -36,15 +38,11 @@ export default function AIAppLayout({
   rightMenuComponents,
   toolbarContent,
   contentStyle,
+  drawerStyle = {},
 }: AIAppLayoutProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [leftMenuOpen, setLeftMenuOpen] = useState<boolean>(false);
-  const [rightMenuOpen, setRightMenuOpen] = useState<boolean>(false);
 
-  // Determine how much to offset from each side:
-  const leftOffset = showLeftSideMenu ? (leftMenuOpen ? 240 : 0) : 0;
-  const rightOffset = showRightSideMenu ? (rightMenuOpen ? 240 : 0) : 0;
   // AIAppLayout
   return (
     <Box
@@ -52,39 +50,41 @@ export default function AIAppLayout({
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        "& .MuiDrawer-paper": {
-          position: "fixed", // Fix for mobile viewport
-          height: "100vh", // Full viewport height
-        },
       }}
     >
       {/* Side menu */}
-      <Box>
-        {showLeftSideMenu && (
+      <Box
+        sx={{
+          ...drawerStyle,
+        }}
+      >
+        {showLeftSideMenu && leftMenuComponents?.onToggle !== undefined && (
           <SideMenu
             direction="left"
-            open={leftMenuOpen}
+            open={leftMenuComponents?.openState}
             header={leftMenuComponents?.header}
             footer={leftMenuComponents?.footer}
             defaultOpen={leftMenuComponents?.defaultOpen}
             width={leftMenuComponents?.width}
             collapsedWidth={leftMenuComponents?.collapsedWidth}
-            onToggle={setLeftMenuOpen}
+            onToggle={leftMenuComponents.onToggle}
+            contentStyle={leftMenuComponents?.style}
           >
             {leftMenuComponents?.content}
           </SideMenu>
         )}
 
-        {showRightSideMenu && (
+        {showRightSideMenu && rightMenuComponents?.onToggle !== undefined && (
           <SideMenu
-            open={rightMenuOpen}
+            open={rightMenuComponents?.openState}
             direction="right"
             header={rightMenuComponents?.header}
             footer={rightMenuComponents?.footer}
             defaultOpen={rightMenuComponents?.defaultOpen}
             width={rightMenuComponents?.width}
             collapsedWidth={rightMenuComponents?.collapsedWidth}
-            onToggle={setRightMenuOpen}
+            onToggle={rightMenuComponents.onToggle}
+            contentStyle={rightMenuComponents?.style}
           >
             {rightMenuComponents?.content}
           </SideMenu>
@@ -105,13 +105,32 @@ export default function AIAppLayout({
               alignItems: "center",
               px: 2,
               minHeight: "56px !important",
+              // ml: leftMenuComponents?.openState
+              //   ? `${leftMenuComponents?.width}px`
+              //   : "0px",
+              // mr: rightMenuComponents?.openState
+              //   ? `${rightMenuComponents?.width}px`
+              //   : "0px",
+              // transition: "all 0.3s ease-in-out",
             }}
           >
             {/* Spacer pushes the next Box to the right */}
             <Box sx={{ flexGrow: 1 }} />
 
             {/* Right side: your toolbarContent */}
-            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                justifyContent: "flex-end",
+                // mr: leftMenuComponents?.openState
+                //   ? `${leftMenuComponents?.width}px`
+                //   : "0px",
+                // ml: rightMenuComponents?.openState
+                //   ? `${rightMenuComponents?.width}px`
+                //   : "0px",
+              }}
+            >
               {toolbarContent}
             </Box>
           </Toolbar>
