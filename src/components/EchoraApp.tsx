@@ -4,6 +4,7 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import AIAppLayout from "./Core/AIAppLayout";
 import {
+  AppBar,
   Avatar,
   Badge,
   Box,
@@ -16,6 +17,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
@@ -62,80 +64,153 @@ export default function EchoraApp({
     }
   };
 
+  // <Box
+  //     sx={{
+  //       display: "flex",
+  //     }}
+  //   >
+  //     <Box
+  //       sx={{
+  //         justifyContent: "flex-start",
+  //       }}
+  //     >
+  //       <IconButton onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
+  //         <MenuIcon />
+  //       </IconButton>
+  //     </Box>
+  //     <Badge
+  //       overlap="circular"
+  //       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+  //       badgeContent={
+  //         <Chip
+  //           label={isMobile ? "" : userPlan}
+  //           size="small"
+  //           color={getPlanColor(userPlan)}
+  //           sx={{
+  //             fontSize: "0.6rem",
+  //             height: "18px",
+  //             "& .MuiChip-label": {
+  //               px: isMobile ? 0 : 0.5,
+  //               display: isMobile ? "none" : "flex",
+  //             },
+  //           }}
+  //         />
+  //       }
+  //     >
+  //       <IconButton
+  //         onClick={(e) => setAnchorEl(e.currentTarget)}
+  //         sx={isMobile ? { padding: "6px" } : {}}
+  //       >
+  //         <Avatar
+  //           sx={{
+  //             width: isMobile ? 32 : 40,
+  //             height: isMobile ? 32 : 40,
+  //           }}
+  //         >
+  //           U
+  //         </Avatar>
+  //       </IconButton>
+  //     </Badge>
+  //     <Menu
+  //       anchorEl={anchorEl}
+  //       open={Boolean(anchorEl)}
+  //       onClose={() => setAnchorEl(null)}
+  //       PaperProps={{
+  //         style: {
+  //           maxHeight: isMobile ? "50vh" : "none",
+  //           width: isMobile ? "100vw" : "200px",
+  //         },
+  //       }}
+  //     >
+  //       <MenuItem onClick={() => navigate("/profile")}>
+  //         <ListItemIcon>
+  //           <Person fontSize="small" />
+  //         </ListItemIcon>
+  //         <Typography variant="body2">My Profile</Typography>
+  //       </MenuItem>
+  //       <MenuItem onClick={() => navigate("/settings")}>
+  //         <ListItemIcon>
+  //           <Settings fontSize="small" />
+  //         </ListItemIcon>
+  //         <Typography variant="body2">Settings</Typography>
+  //       </MenuItem>
+  //       <MenuItem
+  //         onClick={() => {
+  //           dispatch(logout());
+  //           navigate("/login");
+  //         }}
+  //       >
+  //         <ListItemIcon>
+  //           <ExitToApp fontSize="small" />
+  //         </ListItemIcon>
+  //         <Typography variant="body2">Logout</Typography>
+  //       </MenuItem>
+  //     </Menu>
+  //   </Box>
   const toolbarContent = (
-    <Box>
-      <Badge
-        overlap="circular"
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        badgeContent={
-          <Chip
-            label={isMobile ? "" : userPlan}
-            size="small"
-            color={getPlanColor(userPlan)}
-            sx={{
-              fontSize: "0.6rem",
-              height: "18px",
-              "& .MuiChip-label": {
-                px: isMobile ? 0 : 0.5,
-                display: isMobile ? "none" : "flex",
-              },
-            }}
-          />
-        }
+    <>
+      {/* Left: Menu button */}
+      <IconButton
+        edge="start"
+        onClick={() => setLeftMenuOpen(!leftMenuOpen)}
+        color="inherit"
+        aria-label="open drawer"
       >
-        <IconButton onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
-          <MenuIcon />
-        </IconButton>
-        <IconButton
-          onClick={(e) => setAnchorEl(e.currentTarget)}
-          sx={isMobile ? { padding: "6px" } : {}}
-        >
-          <Avatar
-            sx={{
-              width: isMobile ? 32 : 40,
-              height: isMobile ? 32 : 40,
-            }}
+        {leftMenuOpen ? <MenuOpen /> : <MenuIcon />}
+      </IconButton>
+
+      {/* Middle: any children (e.g. page title or search) */}
+      {/* <Box sx={{ flexGrow: 1, textAlign: "center", overflow: "hidden" }}>
+          {!isMobile && (
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{ fontFamily: "'Courier Prime', monospace" }}
+            >
+              {children}
+            </Typography>
+          )}
+        </Box> */}
+
+      {/* Right: Notifications + User avatar */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <IconButton color="inherit">
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={
+              <Chip
+                label={isMobile ? "" : userPlan}
+                size="small"
+                color={getPlanColor(userPlan)}
+                sx={{
+                  fontSize: "0.6rem",
+                  height: "18px",
+                  "& .MuiChip-label": {
+                    px: isMobile ? 0 : 0.5,
+                    display: isMobile ? "none" : "flex",
+                  },
+                }}
+              />
+            }
           >
-            U
-          </Avatar>
+            <IconButton
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+              sx={isMobile ? { padding: "6px" } : {}}
+            >
+              <Avatar
+                sx={{
+                  width: isMobile ? 32 : 40,
+                  height: isMobile ? 32 : 40,
+                }}
+              >
+                U
+              </Avatar>
+            </IconButton>
+          </Badge>
         </IconButton>
-      </Badge>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}
-        PaperProps={{
-          style: {
-            maxHeight: isMobile ? "50vh" : "none",
-            width: isMobile ? "100vw" : "200px",
-          },
-        }}
-      >
-        <MenuItem onClick={() => navigate("/profile")}>
-          <ListItemIcon>
-            <Person fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="body2">My Profile</Typography>
-        </MenuItem>
-        <MenuItem onClick={() => navigate("/settings")}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="body2">Settings</Typography>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            dispatch(logout());
-            navigate("/login");
-          }}
-        >
-          <ListItemIcon>
-            <ExitToApp fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="body2">Logout</Typography>
-        </MenuItem>
-      </Menu>
-    </Box>
+      </Box>
+    </>
   );
 
   const menuContent = (
@@ -181,48 +256,28 @@ export default function EchoraApp({
   const onNewProject = () => {};
 
   const menuHeader = (
-    <Box>
-      {/* Left: Logo/Title & New button when expanded */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {leftMenuOpen && (
-          <Typography
-            variant="subtitle1"
-            sx={{
-              fontFamily: "'Courier Prime', monospace",
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-            }}
-          >
-            Echora
-          </Typography>
-        )}
-        {/* Right: Collapse/Expand control using menu icons */}
-        <IconButton
-          onClick={() => setLeftMenuOpen(!leftMenuOpen)}
-          size="small"
-          // sx={{ color: fg }}
-          aria-label={leftMenuOpen ? "Expand menu" : "Collapse menu"}
-        >
-          {!leftMenuOpen ? (
-            <MenuIcon fontSize="small" />
-          ) : (
-            <MenuOpen fontSize="small" />
-          )}
-        </IconButton>
-        {leftMenuOpen && (
-          <IconButton
-            onClick={onNewProject}
-            size="small"
-            // sx={{ color: fg }}
-            aria-label="New"
-          >
-            <AddToPhotos fontSize="small" />
-          </IconButton>
-        )}
-      </Box>
-    </Box>
+    <Toolbar
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        width: "100%",
+        px: 2,
+        minHeight: 56,
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontFamily: "'Courier Prime', monospace",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          textOverflow: "ellipsis",
+          overflow: "hidden",
+        }}
+      >
+        Echora
+      </Typography>
+    </Toolbar>
   );
 
   return (
@@ -239,7 +294,6 @@ export default function EchoraApp({
         collapsedWidth: 240,
         width: 240,
         defaultOpen: true,
-        onToggle: setLeftMenuOpen,
         openState: leftMenuOpen,
         style: {
           backgroundColor: theme.palette.background.paper,

@@ -1,5 +1,12 @@
 import { ReactNode, useState } from "react";
-import { Box, useMediaQuery, useTheme, Toolbar } from "@mui/material";
+import {
+  Box,
+  useMediaQuery,
+  useTheme,
+  Toolbar,
+  AppBar,
+  IconButton,
+} from "@mui/material";
 
 import SideMenu from "./SideMenu";
 
@@ -15,7 +22,6 @@ interface MenuComponentProps {
   width?: number;
   collapsedWidth?: number;
   openState: boolean;
-  onToggle: (shouldOpen: boolean) => void;
   style?: React.CSSProperties;
 }
 
@@ -58,7 +64,7 @@ export default function AIAppLayout({
           ...drawerStyle,
         }}
       >
-        {showLeftSideMenu && leftMenuComponents?.onToggle !== undefined && (
+        {showLeftSideMenu && (
           <SideMenu
             direction="left"
             open={leftMenuComponents?.openState}
@@ -67,14 +73,13 @@ export default function AIAppLayout({
             defaultOpen={leftMenuComponents?.defaultOpen}
             width={leftMenuComponents?.width}
             collapsedWidth={leftMenuComponents?.collapsedWidth}
-            onToggle={leftMenuComponents.onToggle}
             contentStyle={leftMenuComponents?.style}
           >
             {leftMenuComponents?.content}
           </SideMenu>
         )}
 
-        {showRightSideMenu && rightMenuComponents?.onToggle !== undefined && (
+        {showRightSideMenu && (
           <SideMenu
             open={rightMenuComponents?.openState}
             direction="right"
@@ -83,7 +88,6 @@ export default function AIAppLayout({
             defaultOpen={rightMenuComponents?.defaultOpen}
             width={rightMenuComponents?.width}
             collapsedWidth={rightMenuComponents?.collapsedWidth}
-            onToggle={rightMenuComponents.onToggle}
             contentStyle={rightMenuComponents?.style}
           >
             {rightMenuComponents?.content}
@@ -93,47 +97,25 @@ export default function AIAppLayout({
       {/* Toolbar */}
       <Box>
         {!isMobile && (
-          <Toolbar
-            sx={{
-              position: "fixed",
-              top: 0,
-              zIndex: 1100,
-              width: "100%",
-              backdropFilter: "blur(20px)",
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
-              display: "block",
-              alignItems: "center",
-              px: 2,
-              minHeight: "56px !important",
-              // ml: leftMenuComponents?.openState
-              //   ? `${leftMenuComponents?.width}px`
-              //   : "0px",
-              // mr: rightMenuComponents?.openState
-              //   ? `${rightMenuComponents?.width}px`
-              //   : "0px",
-              // transition: "all 0.3s ease-in-out",
-            }}
-          >
-            {/* Spacer pushes the next Box to the right */}
-            <Box sx={{ flexGrow: 1 }} />
-
-            {/* Right side: your toolbarContent */}
-            <Box
+          <AppBar position="fixed" elevation={0} color="transparent">
+            <Toolbar
               sx={{
                 display: "flex",
-                gap: 1,
-                justifyContent: "flex-end",
-                // mr: leftMenuComponents?.openState
-                //   ? `${leftMenuComponents?.width}px`
-                //   : "0px",
-                // ml: rightMenuComponents?.openState
-                //   ? `${rightMenuComponents?.width}px`
-                //   : "0px",
+                justifyContent: "space-between",
+                px: 2,
+                minHeight: 56,
+                ml: leftMenuComponents?.openState
+                  ? `${leftMenuComponents?.width}px`
+                  : "0px",
+                mr: rightMenuComponents?.openState
+                  ? `${rightMenuComponents?.width}px`
+                  : "0px",
+                transition: "margin 0.3s ease-in-out",
               }}
             >
               {toolbarContent}
-            </Box>
-          </Toolbar>
+            </Toolbar>
+          </AppBar>
         )}
       </Box>
       {/* MainContent */}

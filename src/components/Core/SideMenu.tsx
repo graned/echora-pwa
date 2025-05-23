@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import {
   Box,
   Drawer,
@@ -6,14 +6,9 @@ import {
   Divider,
   styled,
   css,
-  Tooltip,
   useTheme,
 } from "@mui/material";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Menu as MenuIcon,
-} from "@mui/icons-material";
+import { Menu as MenuIcon } from "@mui/icons-material";
 
 interface MenuComponentProps {
   content: JSX.Element;
@@ -21,7 +16,7 @@ interface MenuComponentProps {
 }
 type SideMenuProps = {
   open?: boolean;
-  onToggle: (b: boolean) => void;
+  onToggle?: (b: boolean) => void;
   direction?: "left" | "right";
   width?: number;
   collapsedWidth?: number;
@@ -36,6 +31,7 @@ type SideMenuProps = {
 const SmoothDrawer = styled(Drawer)(
   ({ theme }) => css`
     & .MuiDrawer-paper {
+      z-index: ${theme.zIndex.drawer + 1}; /* always above AppBar */
       transition: all 0.3s ease-in-out;
       overflow-x: hidden;
       box-shadow: ${theme.shadows[4]};
@@ -53,7 +49,7 @@ export default function SideMenu({
   children,
   header,
   footer,
-  onToggle,
+  onToggle = () => {},
   contentStyle,
   drawerStyle,
 }: SideMenuProps) {
