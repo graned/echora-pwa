@@ -1,26 +1,9 @@
-// pages/StoryEditorPage.tsx
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Box, useTheme, Typography } from "@mui/material";
 import SlateEditor from "../components/Editor/SlateEditor";
 
-// A handful of inspiring story‐starter quotes
-const QUOTES = [
-  "“Every story begins with a single spark of imagination.”",
-  "“In the silence between words, worlds unfold.”",
-  "“Write what you wish had happened.”",
-  "“Let your heart guide your pen.”",
-  "“Stories are the roads we travel in our minds.”",
-  "“The next adventure lives on this page.”",
-];
-
 export default function StoryEditorPage() {
   const theme = useTheme();
-
-  // Pick one quote per load
-  const quote = useMemo(() => {
-    const idx = Math.floor(Math.random() * QUOTES.length);
-    return QUOTES[idx];
-  }, []);
 
   return (
     <Box
@@ -36,20 +19,6 @@ export default function StoryEditorPage() {
         paddingRight: { xs: "2%", md: "10%" }, // remove left padding on mobile
       }}
     >
-      {/* Page quote */}
-      <Typography
-        variant="h6"
-        sx={{
-          fontFamily: "'Courier Prime', monospace",
-          fontStyle: "italic",
-          fontWeight: 400,
-          mb: 3,
-          textAlign: { xs: "center", md: "left" },
-        }}
-      >
-        {quote}
-      </Typography>
-
       {/* Editor container */}
       <Box
         sx={{
@@ -62,6 +31,7 @@ export default function StoryEditorPage() {
           // ensure child <Box> (editor) fills this
           display: "flex",
           flexDirection: "column",
+          mt: 3,
         }}
       >
         <SlateEditor />
