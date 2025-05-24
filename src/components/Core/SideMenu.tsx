@@ -16,6 +16,7 @@ interface MenuComponentProps {
 }
 type SideMenuProps = {
   open?: boolean;
+  variant?: "permanent" | "temporary";
   onToggle?: (b: boolean) => void;
   direction?: "left" | "right";
   width?: number;
@@ -43,6 +44,7 @@ const SmoothDrawer = styled(Drawer)(
 
 export default function SideMenu({
   open = true,
+  variant = "permanent",
   direction = "left",
   width = 240,
   collapsedWidth = 56,
@@ -79,13 +81,13 @@ export default function SideMenu({
 
       {/* Main Drawer */}
       <SmoothDrawer
-        variant="permanent"
+        variant={variant}
         anchor={direction}
         open={open}
         sx={{
-          width: open ? width : collapsedWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
+            transition: "width 0.3s ease-in-out",
             width: open ? width : collapsedWidth,
             boxSizing: "border-box",
           },

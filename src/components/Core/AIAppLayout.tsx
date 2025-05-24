@@ -1,12 +1,5 @@
-import { ReactNode, useState } from "react";
-import {
-  Box,
-  useMediaQuery,
-  useTheme,
-  Toolbar,
-  AppBar,
-  IconButton,
-} from "@mui/material";
+import { ReactNode } from "react";
+import { Box, useTheme, Toolbar, AppBar } from "@mui/material";
 
 import SideMenu from "./SideMenu";
 
@@ -23,6 +16,7 @@ interface MenuComponentProps {
   collapsedWidth?: number;
   openState: boolean;
   style?: React.CSSProperties;
+  variant?: "permanent" | "temporary";
 }
 
 export interface AIAppLayoutProps {
@@ -30,7 +24,10 @@ export interface AIAppLayoutProps {
   showRightSideMenu?: boolean;
   leftMenuComponents?: MenuComponentProps;
   rightMenuComponents?: MenuComponentProps;
-  toolbarContent?: JSX.Element;
+  toolbarComponent?: {
+    content: JSX.Element;
+    style: React.CSSProperties;
+  };
   contentStyle?: React.CSSProperties;
   drawerStyle?: React.CSSProperties;
   children: ReactNode;
@@ -42,12 +39,11 @@ export default function AIAppLayout({
   showRightSideMenu = false,
   leftMenuComponents,
   rightMenuComponents,
-  toolbarContent,
+  toolbarComponent,
   contentStyle,
   drawerStyle = {},
 }: AIAppLayoutProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // AIAppLayout
   return (
@@ -66,6 +62,7 @@ export default function AIAppLayout({
       >
         {showLeftSideMenu && (
           <SideMenu
+            variant={leftMenuComponents?.variant}
             direction="left"
             open={leftMenuComponents?.openState}
             header={leftMenuComponents?.header}
@@ -81,6 +78,7 @@ export default function AIAppLayout({
 
         {showRightSideMenu && (
           <SideMenu
+            variant={rightMenuComponents?.variant}
             open={rightMenuComponents?.openState}
             direction="right"
             header={rightMenuComponents?.header}
@@ -96,27 +94,19 @@ export default function AIAppLayout({
       </Box>
       {/* Toolbar */}
       <Box>
-        {!isMobile && (
-          <AppBar position="fixed" elevation={0} color="transparent">
-            <Toolbar
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                px: 2,
-                minHeight: 56,
-                ml: leftMenuComponents?.openState
-                  ? `${leftMenuComponents?.width}px`
-                  : "0px",
-                mr: rightMenuComponents?.openState
-                  ? `${rightMenuComponents?.width}px`
-                  : "0px",
-                transition: "margin 0.3s ease-in-out",
-              }}
-            >
-              {toolbarContent}
-            </Toolbar>
-          </AppBar>
-        )}
+        <AppBar position="fixed" elevation={0} color="transparent">
+          <Toolbar
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              px: 2,
+              minHeight: 56,
+              ...toolbarComponent?.style,
+            }}
+          >
+            {toolbarComponent?.content}
+          </Toolbar>
+        </AppBar>
       </Box>
       {/* MainContent */}
       <Box

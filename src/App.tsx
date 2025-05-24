@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/Core/ProtectedRoute";
 import { useAppSelector } from "./store/hooks";
-import EchoraApp from "./components/EchoraApp";
+import EchoraApp from "./apps/EchoraApp";
 import StoryEditorPage from "./pages/StoryEditorPage";
 
 export default function App() {
