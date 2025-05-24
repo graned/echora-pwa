@@ -56,6 +56,19 @@ export default function Toolbar({
         return "default";
     }
   };
+  const newProjectButton = (
+    <Button onClick={() => onNewProject()} color="inherit">
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+        }}
+      >
+        <AddToPhotos />
+        <Typography variant="caption">New Project</Typography>
+      </Box>
+    </Button>
+  );
   return (
     <>
       <Box>
@@ -68,18 +81,9 @@ export default function Toolbar({
         >
           {menuOpen ? <MenuOpen /> : <MenuIcon />}
         </IconButton>
-        <Button onClick={() => onNewProject()} color="inherit">
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-            }}
-          >
-            <AddToPhotos />
-            <Typography variant="caption">New Project</Typography>
-          </Box>
-        </Button>
+        {!isMobile && newProjectButton}
       </Box>
+      {isMobile && newProjectButton}
       {/* Right: Notifications + User avatar */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <IconButton color="inherit">

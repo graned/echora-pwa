@@ -157,7 +157,7 @@ export default function LeftMenuContent({
           </Box>
         ) : (
           projects.map((project) => (
-            <Tooltip title={project.name}>
+            <Tooltip title={project.name} arrow placement="right">
               <ListItemButton
                 key={project.id}
                 onClick={() => onSelectProject(project.id)}

@@ -23,27 +23,38 @@ export default function LeftMenuFooter({ isMobile }: LeftMenuFooterProps) {
 
   const planColor = planColors[userPlan] || theme.palette.text.primary;
   const onOpenPlans = () => {};
+  const onBuyTokens = () => {};
 
   return (
     <Box sx={{ p: 1 }}>
       {/* Tokens Remaining Display */}
-      <Box
+      <Button
+        fullWidth
+        onClick={onBuyTokens}
         sx={{
-          mt: 1,
-          px: 1,
-          gap: 2,
-          textAlign: "left",
-          display: "flex",
-          alignItems: "center",
+          justifyContent: "flex-start",
+          textTransform: "none",
+          py: paddingY,
         }}
       >
-        <Typography variant="caption" color="textSecondary">
-          Tokens Left
-        </Typography>
-        <Typography variant="body2" sx={{ fontWeight: 500, mt: 0.25 }}>
-          {tokensLeft.toLocaleString()}
-        </Typography>
-      </Box>
+        <Box
+          sx={{
+            mt: 1,
+            px: 1,
+            gap: 2,
+            textAlign: "left",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="caption" color="textSecondary">
+            Tokens Left
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 500, mt: 0.25 }}>
+            {tokensLeft.toLocaleString()}
+          </Typography>
+        </Box>
+      </Button>
       <Button
         fullWidth
         onClick={onOpenPlans}
