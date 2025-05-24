@@ -230,7 +230,6 @@ export default function SlateEditor() {
             renderElement={renderElement}
             placeholder="Write your story..."
             style={{
-              // minHeight: 200,
               cursor: "text",
               outline: "none",
               caretColor: theme.palette.primary.main,

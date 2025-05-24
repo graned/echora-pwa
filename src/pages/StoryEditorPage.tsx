@@ -11,7 +11,6 @@ export default function StoryEditorPage() {
         display: "flex",
         flexDirection: "column",
         height: "calc(100vh - 64px)",
-
         px: { xs: 2, md: 8 }, // responsive horizontal padding
         py: 4,
         pt: 8,

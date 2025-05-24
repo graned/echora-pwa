@@ -113,7 +113,6 @@ export default function AIAppLayout({
         component="main"
         sx={{
           flexGrow: 1,
-          // mt: !isMobile ? "56px" : 0, // push below toolbar
           overflow: "auto",
           ...contentStyle,
         }}

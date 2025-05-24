@@ -145,6 +145,7 @@ export default function LeftMenuContent({
               backgroundColor: "rgba(0, 0, 0, 0.4)",
             },
           },
+          scrollBehavior: "smooth",
           scrollbarWidth: "thin",
           scrollbarColor: "rgba(0,0,0,0.2) transparent",
         }}
